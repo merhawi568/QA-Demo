@@ -1,0 +1,10 @@
+{
+  "ticket_id": "TKT67890",
+  "account_id": "ACC12345",
+  "trade_type": "SP",
+  "platform": "Madrid",
+  "execution_time": "2025-10-23T14:30:00Z",
+  "trade_amount": 100000,
+  "currency": "USD",
+  "status": "executed"
+}
