@@ -1,0 +1,9 @@
+def date_compare(date1, date2, operation):
+    """
+    Returns: {
+        "passed": bool,
+        "reason": "Consent at 14:03 is before trade at 14:30 (27 min buffer)",
+        "date1": "2025-10-23T14:03:00Z",
+        "date2": "2025-10-23T14:30:00Z"
+    }
+    """
