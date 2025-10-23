@@ -11,7 +11,7 @@ from agents.result_aggregator import ResultAggregator
 from agents.decision_agent import DecisionAgent
 from agents.exception_agent import ExceptionAgent
 from engines.workflow_engine import WorkflowEngine
-
+import argparse
 def main():
     load_dotenv()
     
@@ -23,6 +23,15 @@ def main():
     )
     
     # Initialize components
+    parser = argparse.ArgumentParser(description='QA Agent Demo')
+    parser.add_argument('--ticket', type=str, default='TKT67890', 
+                       help='Ticket ID to validate')
+    parser.add_argument('--scenario', choices=['pass', 'fail'], 
+                       default='pass', help='Scenario to run')
+    parser.add_argument('--verbose', action='store_true', 
+                       help='Verbose output')
+    
+    args = parser.parse_args()
     data_loader = DataLoader("mock_data")
     orchestrator = OrchestratorAgent(llm)
     data_agent = DataRequestAgent(data_loader)
