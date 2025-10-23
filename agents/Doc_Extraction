@@ -1,0 +1,9 @@
+def extract_from_document(doc_path, schema):
+    """
+    Uses OpenAI to extract structured data from PDFs/forms
+    Returns: {
+        "extracted_data": {"client_name": "John Smith", ...},
+        "confidence": 0.95,
+        "reason": "Successfully extracted all required fields"
+    }
+    """
