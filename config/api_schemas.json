@@ -1,0 +1,22 @@
+{
+  "apis": {
+    "CRM": {
+      "base_url": "https://crm.company.com/api/v1",
+      "endpoints": {
+        "get_account": "/accounts/{account_id}",
+        "search_accounts": "/accounts/search"
+      },
+      "auth_type": "bearer",
+      "fields": ["account_id", "account_number", "account_name", "email", "phone", "status"]
+    },
+    "TradeTicket": {
+      "base_url": "https://trading.company.com/api/v1",
+      "endpoints": {
+        "get_ticket": "/tickets/{ticket_id}",
+        "list_tickets": "/tickets"
+      },
+      "auth_type": "bearer",
+      "fields": ["ticket_id", "account_id", "trade_type", "execution_time", "platform"]
+    }
+  }
+}
