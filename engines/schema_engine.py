@@ -1,15 +1,18 @@
-# Stores:
-{
-  "CRM_API": {
-    "endpoint": "/api/v1/accounts/{account_id}",
-    "fields": ["account_number", "account_name", "email", "status"],
-    "auth_type": "bearer_token",
-    "base_url": "https://crm.company.com"
-  },
-  "TradeTicket_API": {
-    "endpoint": "/api/v1/tickets/{ticket_id}",
-    "fields": ["account_id", "trade_type", "execution_time", "platform"]
-  }
-}
+import json
+from pathlib import Path
 
-# Tables metadata, field types, relationships
+class SchemaEngine:
+    def __init__(self, config_path: str = "config/api_schemas.json"):
+        with open(config_path) as f:
+            self.schemas = json.load(f)
+    
+    def get_api_config(self, api_name: str) -> dict:
+        return self.schemas["apis"].get(api_name, {})
+    
+    def get_endpoint(self, api_name: str, endpoint_name: str) -> str:
+        api = self.get_api_config(api_name)
+        return api.get("endpoints", {}).get(endpoint_name)
+    
+    def get_fields(self, api_name: str) -> list:
+        api = self.get_api_config(api_name)
+        return api.get("fields", [])
