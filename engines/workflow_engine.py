@@ -35,8 +35,20 @@ class WorkflowEngine:
         expected_doc_fields: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
 
+        #account_id = ticket["account_id"]
+        #eff_date = ticket["effective_date"]
+        # BEFORE
+        # account_id = ticket["account_id"]
+        # eff_date = ticket["effective_date"]
+        
+        # AFTER
         account_id = ticket["account_id"]
-        eff_date = ticket["effective_date"]
+        # Derive effective_date if it's missing (fallback to execution_time date or a safe default)
+        eff_date = ticket.get("effective_date")
+        if not eff_date:
+            exec_time = ticket.get("execution_time")
+            eff_date = exec_time[:10] if exec_time else "2025-10-01"
+
 
         info("Fetching WorkHub and FeeApp data")
         wh = self.extractor.fetch_workhub_fee_mod(account_id)
