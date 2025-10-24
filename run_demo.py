@@ -18,17 +18,12 @@ def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None)
 
     expected_doc_fields = None
     if pdf_path:
-        # for demo, hardcode; in prod, pull from template/ticket metadata
-        
-
-        # AFTER
         derived_eff = ticket.get("effective_date") or (ticket.get("execution_time", "")[:10] if ticket.get("execution_time") else "2025-10-01")
         expected_doc_fields = {
             "client_name": "JANE DOE",
             "dob": "2015-06-12",
             "effective_date": derived_eff,
         }
-
 
     engine = WorkflowEngine(llm=llm if use_llm else None)
     result = engine.run(
