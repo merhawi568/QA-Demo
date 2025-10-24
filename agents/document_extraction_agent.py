@@ -33,7 +33,6 @@ class DocumentExtractionAgent:
 
     def _python_first_pass(self, text: str, expected_schema: Dict[str, Any]) -> Dict[str, Any]:
         out: Dict[str, Any] = {k: None for k in expected_schema.keys()}
-        # Heuristics — tune for your documents
         m_name = re.search(r"(Client|Customer)\s*Name\s*:\s*(.+)", text, re.IGNORECASE)
         if m_name:
             out["client_name"] = _normalize_name(m_name.group(2))
