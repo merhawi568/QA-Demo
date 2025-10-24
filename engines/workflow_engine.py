@@ -1,22 +1,21 @@
-# engines/workflow_engine.py (replace your current version with this merged one)
+# engines/workflow_engine.py
 import json
 import os
-from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from agents.data_request_agent import DataRequestAgent
 from agents.decision_agent import DecisionAgent
 from agents.result_aggregator import ResultAggregator
 from agents.exception_agent import ExceptionAgent
 from agents.compare import rounded_equality, date_in_range, equals
 from utils.logger import info
-from agents.document_extraction_agent import DocumentExtractionAgent  # NEW
+from agents.document_extraction_agent import DocumentExtractionAgent
 
 class WorkflowEngine:
     """
-    Minimal, deterministic QA workflow for Fee Modification + optional doc check:
-      - Extract datapoints (WorkHub, FeeApp, Email approval)
-      - Optional: extract document fields from a PDF (LLM tool if enabled)
-      - Run checks: rate match (rounded 2dp), effective date window, approval exists, doc field checks
+    Deterministic QA workflow for Fee Modification + optional doc check:
+      - Extract datapoints (WorkHub, FeeApp, Email approval) from mocks/tools
+      - Optional: extract document fields from a PDF (Python + LLM tool if enabled)
+      - Run checks: rate match (rounded 2dp), effective date window, approval exists, doc field matches
       - Aggregate -> Decide -> (optional) Exception email payload
     """
     def __init__(self, llm=None):
@@ -24,10 +23,18 @@ class WorkflowEngine:
         self.decision = DecisionAgent()
         self.agg = ResultAggregator()
         self.exception = ExceptionAgent()
-        self.doc = DocumentExtractionAgent(llm=llm)  # NEW
+        self.doc = DocumentExtractionAgent(llm=llm)
 
-    def run(self, ticket: Dict[str, Any], scenario: str = "happy", use_llm: bool = False, llm=None,
-            pdf_path: str | None = None, expected_doc_fields: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    def run(
+        self,
+        ticket: Dict[str, Any],
+        scenario: str = "happy",
+        use_llm: bool = False,
+        llm=None,
+        pdf_path: Optional[str] = None,
+        expected_doc_fields: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+
         account_id = ticket["account_id"]
         eff_date = ticket["effective_date"]
 
@@ -37,37 +44,39 @@ class WorkflowEngine:
         approval_exists = self.extractor.email_approval_exists(account_id)
 
         checks: List[Dict[str, Any]] = []
-        # 1) rate compares
+
+        # 1) Rate match
         c1 = rounded_equality(wh["new_rate"], fa["approved_rate"], places=2)
         c1.update({"id": "rate_match"})
         checks.append(c1)
-        # 2) approval
-        c2 = {"passed": bool(approval_exists), "reason": "approval email present" if approval_exists else "approval email missing", "id": "approval_email_present"}
+
+        # 2) Approval email existence
+        c2 = {
+            "id": "approval_email_present",
+            "passed": bool(approval_exists),
+            "reason": "approval email present" if approval_exists else "approval email missing",
+            "left": approval_exists, "right": True
+        }
         checks.append(c2)
-        # 3) effective date window
+
+        # 3) Effective date window (mod within 7 days of effective_date)
         c3 = date_in_range(wh["modified_timestamp"], eff_date, 7)
         c3.update({"id": "effective_date_window"})
         checks.append(c3)
 
-        # 4) NEW: Document extraction & field comparisons (optional)
-        extracted_doc: Dict[str, Any] | None = None
+        # 4) Document extraction & field comparisons (optional)
+        extracted_doc: Optional[Dict[str, Any]] = None
         if pdf_path and expected_doc_fields:
             info(f"Extracting fields from document: {pdf_path}")
             extracted_doc = self.doc.extract_fields(pdf_path, expected_doc_fields)
 
-            # Compare expected vs extracted (only for provided keys)
             for key, expected_value in expected_doc_fields.items():
                 got = extracted_doc.get(key)
-                # choose comparator based on field type
+                # choose comparator
                 if key in ("client_name", "name", "account_name"):
-                    # relaxed string equality
                     res = equals(got, expected_value, normalize=True)
-                elif "date" in key or key in ("dob",):
-                    # compare normalized ISO dates; if not ISO, the reason will still print values
-                    res = equals(got, expected_value, normalize=False)
                 else:
                     res = equals(got, expected_value, normalize=False)
-
                 res.update({"id": f"doc_field_match::{key}", "left": got, "right": expected_value})
                 checks.append(res)
 
@@ -95,7 +104,7 @@ class WorkflowEngine:
                 f"Checks: {json.dumps(checks)}\n"
                 "Summarize in 3 bullets. Keep factual and neutral."
             )
-            llm_out = llm.invoke(prompt)
-            result["llm_summary"] = str(llm_out.content)
+            out = llm.invoke(prompt)
+            result["llm_summary"] = getattr(out, "content", str(out))
 
         return result
