@@ -1,6 +1,5 @@
-# run_demo.py (only diffs shown vs the version I gave you)
-import json
 import os
+import json
 import argparse
 from dotenv import load_dotenv
 from rich.panel import Panel
@@ -17,10 +16,9 @@ def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None)
     if use_llm and os.getenv("OPENAI_API_KEY"):
         llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
-    # expected fields for doc extraction (for demo)
     expected_doc_fields = None
     if pdf_path:
-        # In a real run, you’d pull these from ticket metadata or template.
+        # for demo, hardcode; in prod, pull from template/ticket metadata
         expected_doc_fields = {
             "client_name": "JANE DOE",
             "dob": "2015-06-12",
@@ -57,7 +55,8 @@ def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None)
 
     out_dir = "outputs"; os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"RUN_{ticket_id}_{scenario}.json")
-    open(path, "w").write(json.dumps(result, indent=2))
+    with open(path, "w") as f:
+        f.write(json.dumps(result, indent=2))
     info(f"Ledger written to {path}")
 
 def main():
