@@ -1,6 +1,5 @@
 # engines/workflow_engine.py
 import json
-import os
 from typing import Dict, Any, List, Optional
 from agents.data_request_agent import DataRequestAgent
 from agents.decision_agent import DecisionAgent
@@ -35,20 +34,12 @@ class WorkflowEngine:
         expected_doc_fields: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
 
-        #account_id = ticket["account_id"]
-        #eff_date = ticket["effective_date"]
-        # BEFORE
-        # account_id = ticket["account_id"]
-        # eff_date = ticket["effective_date"]
-        
-        # AFTER
         account_id = ticket["account_id"]
-        # Derive effective_date if it's missing (fallback to execution_time date or a safe default)
+        # derive effective_date if missing
         eff_date = ticket.get("effective_date")
         if not eff_date:
             exec_time = ticket.get("execution_time")
             eff_date = exec_time[:10] if exec_time else "2025-10-01"
-
 
         info("Fetching WorkHub and FeeApp data")
         wh = self.extractor.fetch_workhub_fee_mod(account_id)
@@ -84,7 +75,6 @@ class WorkflowEngine:
 
             for key, expected_value in expected_doc_fields.items():
                 got = extracted_doc.get(key)
-                # choose comparator
                 if key in ("client_name", "name", "account_name"):
                     res = equals(got, expected_value, normalize=True)
                 else:
