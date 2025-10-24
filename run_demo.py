@@ -1,100 +1,74 @@
+# run_demo.py (only diffs shown vs the version I gave you)
+import json
 import os
-import time
+import argparse
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from utils.data_loader import DataLoader
-from utils.logger import log_start, log_complete, console
-from agents.orchestrator import OrchestratorAgent
-from agents.data_request_agent import DataRequestAgent
-from agents.result_aggregator import ResultAggregator
-from agents.decision_agent import DecisionAgent
-from agents.exception_agent import ExceptionAgent
-from engines.workflow_engine import WorkflowEngine
 from rich.panel import Panel
+from langchain_openai import ChatOpenAI
+from utils.logger import console, section, success, failure, info
+from utils.data_loader import load_ticket
+from engines.workflow_engine import WorkflowEngine
 
-def run_scenario(engine, data_loader, ticket_id, scenario_name):
-    console.print(Panel(f"[bold cyan]Scenario: {scenario_name}[/bold cyan]", border_style="cyan"))
-    
-    tt = data_loader.load_trade_ticket(ticket_id)
-    log_start(ticket_id, tt["trade_type"], tt["platform"])
-    
-    start_time = time.time()
-    result = engine.run(ticket_id)
-    duration = time.time() - start_time
-    
-    agg = result.get("aggregated_result", {})
-    status = agg.get("overall_status", "UNKNOWN")
-    total = agg.get("total_checks", 0)
-    failed = agg.get("failed", 0)
-    
-    log_complete(status, duration, total, failed)
-    
-    if result.get("exception_email"):
-        email = result["exception_email"]
-        console.print("\n[bold yellow]📧 Exception Email Drafted:[/bold yellow]")
-        console.print(Panel(
-            f"[cyan]To:[/cyan] {email['to']}\n"
-            f"[cyan]Subject:[/cyan] {email['subject']}\n\n"
-            f"{email['body']}",
-            border_style="yellow"
-        ))
-    
-    console.print("\n" + "="*80 + "\n")
-    input("Press Enter to continue to next scenario...")
+def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None):
+    section(f"Scenario: {scenario.upper()} — Ticket {ticket_id}")
+    ticket = load_ticket(ticket_id)
+
+    llm = None
+    if use_llm and os.getenv("OPENAI_API_KEY"):
+        llm = ChatOpenAI(model="gpt-4o", temperature=0)
+
+    # expected fields for doc extraction (for demo)
+    expected_doc_fields = None
+    if pdf_path:
+        # In a real run, you’d pull these from ticket metadata or template.
+        expected_doc_fields = {
+            "client_name": "JANE DOE",
+            "dob": "2015-06-12",
+            "effective_date": ticket["effective_date"],
+        }
+
+    engine = WorkflowEngine(llm=llm if use_llm else None)
+    result = engine.run(
+        ticket,
+        scenario=scenario,
+        use_llm=use_llm,
+        llm=llm,
+        pdf_path=pdf_path,
+        expected_doc_fields=expected_doc_fields
+    )
+
+    console.print(Panel("[bold]Checks[/bold]", border_style="cyan"))
+    for c in result["checks"]:
+        (success if c["passed"] else failure)(f"{c['id']}: {c['reason']}")
+
+    console.print(Panel("[bold]Decision[/bold]", border_style="cyan"))
+    if result["decision"]["decision"] == "PASS":
+        success("Overall: PASS")
+    else:
+        failure("Overall: FAIL")
+        ex = result.get("exception_email")
+        if ex:
+            info(f"Exception Email To: {ex['to']}")
+            info(f"Subject: {ex['subject']}")
+            console.print("\n" + ex["body"])
+
+    if use_llm and "llm_summary" in result:
+        console.print(Panel("[bold]LLM Summary[/bold]\n\n" + result["llm_summary"], border_style="magenta"))
+
+    out_dir = "outputs"; os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, f"RUN_{ticket_id}_{scenario}.json")
+    open(path, "w").write(json.dumps(result, indent=2))
+    info(f"Ledger written to {path}")
 
 def main():
     load_dotenv()
-    
-    llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key=os.getenv("OPENAI_API_KEY"))
-    
-    data_loader = DataLoader("mock_data")
-    orchestrator = OrchestratorAgent(llm)
-    data_agent = DataRequestAgent(data_loader)
-    aggregator = ResultAggregator()
-    decision_agent = DecisionAgent(llm)
-    exception_agent = ExceptionAgent(llm)
-    
-    engine = WorkflowEngine(orchestrator, data_agent, aggregator, decision_agent, exception_agent)
-    
-    console.print(Panel(
-        "[bold green]QA Agent Multi-Agent Demo[/bold green]\n\n"
-        "This demo shows:\n"
-        "• Orchestrator determining required checks\n"
-        "• Data agents fetching from mock APIs\n"
-        "• Task agents running validations\n"
-        "• Decision agent evaluating results\n"
-        "• Exception agent drafting emails\n\n"
-        "[yellow]Press Ctrl+C to exit anytime[/yellow]",
-        border_style="green"
-    ))
-    input("\nPress Enter to start...")
-    
-    # Scenario 1: PASS
-    run_scenario(engine, data_loader, "TKT67890", "✅ All Checks Pass")
-    
-    # Scenario 2: FAIL - Update to use CALL-002
-    console.print("[yellow]Note: Scenario 2 will use CALL-002 (consent after trade)[/yellow]\n")
-    
-    # Temporarily modify workflow to use CALL-002
-    original_fetch = engine.fetch_data
-    def fetch_data_fail(state):
-        state = original_fetch(state)
-        state["voice_data"] = data_loader.load_voice_recording("CALL-002")
-        return state
-    engine.fetch_data = fetch_data_fail
-    
-    run_scenario(engine, data_loader, "TKT67891", "❌ Consent Timing Violation")
-    
-    console.print(Panel(
-        "[bold green]Demo Complete![/bold green]\n\n"
-        "Ready for POC:\n"
-        "1. Uncomment real API code in data_loader.py\n"
-        "2. Add API credentials\n"
-        "3. Connect to real systems\n"
-        "4. Add more validation checks\n"
-        "5. Deploy!",
-        border_style="green"
-    ))
+    parser = argparse.ArgumentParser(description="QA Demo Runner")
+    parser.add_argument("--ticket", default="TKT67890")
+    parser.add_argument("--scenario", choices=["happy", "fail"], default="happy")
+    parser.add_argument("--llm", action="store_true", help="Use OpenAI for narrative + PDF structuring")
+    parser.add_argument("--pdf", default=None, help="Path to a PDF to parse (enables document checks)")
+    args = parser.parse_args()
+    run_case(args.ticket, args.scenario, use_llm=args.llm, pdf_path=args.pdf)
 
 if __name__ == "__main__":
     main()
