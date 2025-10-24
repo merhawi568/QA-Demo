@@ -4,6 +4,7 @@
   "trade_type": "SP",
   "platform": "Madrid",
   "execution_time": "2025-10-23T14:30:00Z",
+  "effective_date": "2025-10-01",
   "trade_amount": 100000,
   "currency": "USD",
   "status": "executed"
