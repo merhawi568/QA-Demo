@@ -1,0 +1,1125 @@
+{
+  "session_id": "1d376af6-81ae-44e0-adc1-3fa8ae77a8c8",
+  "status": "completed",
+  "ticket_id": "TKT67891",
+  "ticket_type": "fee_modification",
+  "categorization": {
+    "session_id": "1d376af6-81ae-44e0-adc1-3fa8ae77a8c8",
+    "ticket_id": "TKT67891",
+    "ticket_type": "fee_modification",
+    "categorization": {
+      "ticket_type": "fee_modification",
+      "confidence": 0.4,
+      "reasoning": "Low confidence (0.40), using default type"
+    },
+    "status": "categorization_complete",
+    "next_steps": [
+      "Call data agent to extract required data",
+      "Call test management agent to determine test sequence",
+      "Execute tests in the determined order"
+    ]
+  },
+  "data_extraction": {
+    "session_id": "1d376af6-81ae-44e0-adc1-3fa8ae77a8c8",
+    "ticket_type": "fee_modification",
+    "extraction_result": {
+      "success": true,
+      "extracted_data": {
+        "connect_data": {
+          "source": "connect",
+          "data": {
+            "order_id": "TKT67891",
+            "trade_inquiry": "Equity trade inquiry for client ABC",
+            "order_restrictions": "No restrictions",
+            "profile_canvas": "Standard client profile",
+            "global_fee_transparency": "Fee structure disclosed",
+            "fee_instruct_report": "FEE_INSTRUCT_2025_001",
+            "product_type": "Equity",
+            "transaction_type": "Buy",
+            "execution_timestamps": "2025-10-23T14:35:00Z",
+            "order_time": "2025-10-23T14:30:00Z"
+          },
+          "timestamp": "2025-10-24T00:10:03.430040",
+          "status": "success"
+        },
+        "brokerage_blotter_data": {
+          "source": "brokerage_blotter",
+          "data": {
+            "syndicate_allocation": "50% primary, 50% secondary",
+            "new_subscription": "Yes",
+            "order_taker": "John Smith",
+            "order_receipt_date_time": "2025-10-23T14:30:00Z",
+            "solicitation_tagging": "Solicited",
+            "vl_details": "VL123456",
+            "order_taker_name": "John Smith",
+            "order_placer_details": "Authorized trader - John Smith",
+            "client_profile": "High net worth client profile",
+            "trade_ticket": "TKT123456",
+            "brokerage_blotter": "Blotter entry completed",
+            "trade_blotter": "Trade details recorded",
+            "ticket_fields": "All required fields completed"
+          },
+          "timestamp": "2025-10-24T00:10:03.430048",
+          "status": "success"
+        },
+        "doc_manager_data": {
+          "source": "doc_manager",
+          "data": {
+            "syndicate_communication": "Syndicate communication sent",
+            "bilateral_agreement": "Bilateral agreement signed",
+            "a92_document_code": "A92_2025_001",
+            "doc_manager": "Document management system active",
+            "call_memo": "Call memo recorded",
+            "engagement_status": "Engage = Yes"
+          },
+          "timestamp": "2025-10-24T00:10:03.430052",
+          "status": "success"
+        },
+        "voice_logs_data": {
+          "source": "voice_logs",
+          "data": {
+            "client_instructions": "Client provided specific instructions for trade execution",
+            "fee_communication": "Fee structure communicated to client",
+            "standing_bilateral_agreement_communication": "SBA terms discussed",
+            "order_confirmation": "Order confirmed with client",
+            "order_execution_time": "2025-10-23T14:35:00Z",
+            "voice_log_details": "High quality voice recording available",
+            "voice_log": "Voice log recorded and stored",
+            "client_confirmation": "Client confirmed order details",
+            "proposal_confirmation": "Proposal ID stated and attributes repeated",
+            "mfo_guidance": "MFO guidance provided without client-specific advice"
+          },
+          "timestamp": "2025-10-24T00:10:03.430060",
+          "status": "success"
+        },
+        "aces_data": {
+          "source": "aces",
+          "data": {
+            "control_tab_questions": "All control questions answered",
+            "all_reviews_tab_questions": "Review questions completed",
+            "language_tab": "English language selected",
+            "productivity_tab": "Productivity metrics recorded"
+          },
+          "timestamp": "2025-10-24T00:10:03.430071",
+          "status": "success"
+        },
+        "scribe_data": {
+          "source": "scribe",
+          "data": {
+            "resource_navigation_awm": "AWM navigation completed",
+            "aces_disable_replace_process": "ACES disable process executed",
+            "aces_error_identification_communication": "Error identification completed"
+          },
+          "timestamp": "2025-10-24T00:10:03.430075",
+          "status": "success"
+        }
+      },
+      "sources_processed": [
+        "connect",
+        "brokerage_blotter",
+        "doc_manager",
+        "voice_logs",
+        "aces",
+        "scribe"
+      ]
+    },
+    "status": "data_extraction_complete"
+  },
+  "test_sequence": [
+    {
+      "test_id": "test_1_eligibility_validation",
+      "tool_config": {
+        "tool_name": "eligibility_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "connect_data",
+          "fields": [
+            "product_type",
+            "transaction_type"
+          ],
+          "objective": "Validate eligibility of sample record for evaluation",
+          "error_code": "N/A",
+          "condition": "All products except out-of-scope transactions",
+          "sop_reference": "Validate Eligibility",
+          "primary_platform": "Connect"
+        },
+        "success_criteria": {
+          "eligible": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_2_voice_log_validation",
+      "tool_config": {
+        "tool_name": "voice_log_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "voice_logs_data",
+          "fields": [
+            "voice_log_details"
+          ],
+          "objective": "Confirm Voice Log recorded for order",
+          "error_code": "Voice Log could not be located / Poor call recording quality",
+          "condition": "Always",
+          "sop_reference": "All Reviews Tab Q #1",
+          "primary_platform": "Voice Logs"
+        },
+        "success_criteria": {
+          "recorded": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_3_order_placer_authorization",
+      "tool_config": {
+        "tool_name": "authorization_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "brokerage_blotter_data",
+          "fields": [
+            "order_placer_details",
+            "client_profile"
+          ],
+          "objective": "Verify order placer authorization",
+          "error_code": "Order placer was not authorized",
+          "condition": "Always",
+          "sop_reference": "All Reviews Tab Q #2",
+          "primary_platform": "Brokerage Blotter 2.0, Connect"
+        },
+        "success_criteria": {
+          "authorized": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_4_client_confirmation_no_engage",
+      "tool_config": {
+        "tool_name": "client_confirmation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "voice_logs_data",
+          "fields": [
+            "voice_log",
+            "client_confirmation"
+          ],
+          "objective": "Confirm order with client (if Engage = No)",
+          "error_code": "Trade Order was not confirmed with Client",
+          "condition": "Engage = No",
+          "sop_reference": "All Reviews Tab Q #3",
+          "primary_platform": "Voice Logs"
+        },
+        "success_criteria": {
+          "confirmed": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_5_client_confirmation_engage",
+      "tool_config": {
+        "tool_name": "proposal_confirmation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "voice_logs_data",
+          "fields": [
+            "voice_log",
+            "proposal_confirmation"
+          ],
+          "objective": "Confirm order with client (if Engage = Yes)",
+          "error_code": "Proposal ID not stated or attributes not repeated",
+          "condition": "Engage = Yes",
+          "sop_reference": "All Reviews Tab Q #4",
+          "primary_platform": "Voice Logs"
+        },
+        "success_criteria": {
+          "confirmed": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_6_unapproved_products_advice",
+      "tool_config": {
+        "tool_name": "advice_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "not_exists",
+        "parameters": {
+          "data_source": "voice_logs_data",
+          "fields": [
+            "voice_log",
+            "trade_inquiry"
+          ],
+          "objective": "Ensure no advice on unapproved products",
+          "error_code": "Investor gave advice for unapproved products",
+          "condition": "Order Type \u2260 Approved",
+          "sop_reference": "All Reviews Tab Q #5",
+          "primary_platform": "Brokerage Blotter 2.0, Voice Logs"
+        },
+        "success_criteria": {
+          "no_advice": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_7_scrf_dre_documentation",
+      "tool_config": {
+        "tool_name": "documentation_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "doc_manager_data",
+          "fields": [
+            "doc_manager",
+            "call_memo"
+          ],
+          "objective": "Validate SCRF or DRE documentation",
+          "error_code": "SCRF/DRE not on file",
+          "condition": "Order Type = FVEQ New Issuance",
+          "sop_reference": "All Reviews Tab Q #6",
+          "primary_platform": "Doc Manager"
+        },
+        "success_criteria": {
+          "documented": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_8_trade_solicitation_documentation",
+      "tool_config": {
+        "tool_name": "solicitation_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "brokerage_blotter_data",
+          "fields": [
+            "trade_ticket",
+            "brokerage_blotter"
+          ],
+          "objective": "Confirm trade solicitation documentation",
+          "error_code": "Trade solicitation inaccurately tagged / not documented",
+          "condition": "Always",
+          "sop_reference": "All Reviews Tab Q #7",
+          "primary_platform": "Brokerage Blotter 2.0"
+        },
+        "success_criteria": {
+          "documented": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_9_trade_documentation_verification",
+      "tool_config": {
+        "tool_name": "trade_documentation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "brokerage_blotter_data",
+          "fields": [
+            "trade_blotter",
+            "ticket_fields"
+          ],
+          "objective": "Verify trade documentation on blotter/ticket",
+          "error_code": "VL details inaccurate/not documented",
+          "condition": "Always",
+          "sop_reference": "All Reviews Tab Q #8",
+          "primary_platform": "Brokerage Blotter 2.0"
+        },
+        "success_criteria": {
+          "complete_and_accurate": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_10_mfo_advice_validation",
+      "tool_config": {
+        "tool_name": "mfo_advice_validation_tool",
+        "tool_type": "validate_presence",
+        "operation": "not_exists",
+        "parameters": {
+          "data_source": "voice_logs_data",
+          "fields": [
+            "mfo_guidance",
+            "voice_log"
+          ],
+          "objective": "Avoid client-specific advice for MFO",
+          "error_code": "Client-specific advice was provided",
+          "condition": "Order taken by MFO",
+          "sop_reference": "All Reviews Tab Q #9",
+          "primary_platform": "Voice Logs"
+        },
+        "success_criteria": {
+          "no_client_advice": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_11_timely_execution_check",
+      "tool_config": {
+        "tool_name": "timely_execution_tool",
+        "tool_type": "date_range_check",
+        "operation": "in_range",
+        "parameters": {
+          "data_source": "connect_data",
+          "fields": [
+            "execution_timestamps",
+            "order_time",
+            "profile_canvas"
+          ],
+          "objective": "Check timely order execution",
+          "error_code": "Order not executed timely",
+          "condition": "Product class = Equity, ETF, Listed Options, FX, Precious Metals",
+          "sop_reference": "All Reviews Tab Q #10",
+          "primary_platform": "Connect",
+          "max_delay_minutes": 15
+        },
+        "success_criteria": {
+          "within_15_mins": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_12_engagement_status_verification",
+      "tool_config": {
+        "tool_name": "engagement_status_tool",
+        "tool_type": "compare",
+        "operation": "equals",
+        "parameters": {
+          "data_source_a": "connect_data",
+          "data_source_b": "doc_manager_data",
+          "fields_a": [
+            "global_fee_transparency"
+          ],
+          "fields_b": [
+            "engagement_status"
+          ],
+          "objective": "Verify engagement status for account",
+          "error_code": "N/A",
+          "condition": "\u2014",
+          "sop_reference": "Control Tab Q #3",
+          "primary_platform": "Connect, Doc Manager"
+        },
+        "success_criteria": {
+          "status_matches": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_13_bilateral_agreement_documentation",
+      "tool_config": {
+        "tool_name": "bilateral_agreement_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "doc_manager_data",
+          "fields": [
+            "bilateral_agreement"
+          ],
+          "objective": "Check bilateral agreement documentation",
+          "error_code": "Agreement not documented",
+          "condition": "Products in scope for bilateral agreement",
+          "sop_reference": "All Reviews Tab Q #1",
+          "primary_platform": "Doc Manager"
+        },
+        "success_criteria": {
+          "documented": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_14_syndicate_allocation_validation",
+      "tool_config": {
+        "tool_name": "syndicate_allocation_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "brokerage_blotter_data",
+          "fields": [
+            "syndicate_allocation"
+          ],
+          "objective": "Validate if Syndicate Allocation is correct",
+          "error_code": "Incorrect Syndicate Allocation tagging",
+          "condition": "Order Type = FVEQ New Issuance",
+          "sop_reference": "Control Tab Q #2",
+          "primary_platform": "Brokerage Blotter 2.0"
+        },
+        "success_criteria": {
+          "correct": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_15_new_subscription_status",
+      "tool_config": {
+        "tool_name": "new_subscription_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "brokerage_blotter_data",
+          "fields": [
+            "new_subscription"
+          ],
+          "objective": "Check New Subscription status",
+          "error_code": "Incorrect New Subscription status",
+          "condition": "Order Type = FI New Issuance",
+          "sop_reference": "Control Tab Q #2",
+          "primary_platform": "Brokerage Blotter 2.0"
+        },
+        "success_criteria": {
+          "correct": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [],
+      "parallel_execution": true,
+      "retry_count": 0,
+      "timeout": 60
+    },
+    {
+      "test_id": "test_16_aces_fields_completeness",
+      "tool_config": {
+        "tool_name": "aces_completeness_tool",
+        "tool_type": "validate_presence",
+        "operation": "exists",
+        "parameters": {
+          "data_source": "aces_data",
+          "fields": [
+            "control_tab_questions",
+            "all_reviews_tab_questions",
+            "language_tab",
+            "productivity_tab"
+          ],
+          "objective": "Ensure all required ACES fields are complete",
+          "error_code": "Incomplete ACES fields",
+          "condition": "Always",
+          "sop_reference": "Final Steps",
+          "primary_platform": "ACES"
+        },
+        "success_criteria": {
+          "complete": true
+        },
+        "error_handling": null
+      },
+      "dependencies": [
+        "test_1_eligibility_validation",
+        "test_2_voice_log_validation",
+        "test_3_order_placer_authorization",
+        "test_4_client_confirmation_no_engage",
+        "test_5_client_confirmation_engage",
+        "test_6_unapproved_products_advice",
+        "test_7_scrf_dre_documentation",
+        "test_8_trade_solicitation_documentation",
+        "test_9_trade_documentation_verification",
+        "test_10_mfo_advice_validation",
+        "test_11_timely_execution_check",
+        "test_12_engagement_status_verification",
+        "test_13_bilateral_agreement_documentation",
+        "test_14_syndicate_allocation_validation",
+        "test_15_new_subscription_status"
+      ],
+      "parallel_execution": false,
+      "retry_count": 0,
+      "timeout": 60
+    }
+  ],
+  "execution_results": [
+    {
+      "test_id": "test_1_eligibility_validation",
+      "passed": true,
+      "message": "Product Equity and transaction Buy are in scope",
+      "details": {
+        "eligible": true,
+        "product_type": "Equity",
+        "transaction_type": "Buy",
+        "reasoning": "Product Equity and transaction Buy are in scope"
+      },
+      "objective": "Validate eligibility of sample record for evaluation",
+      "sop_reference": "Validate Eligibility",
+      "primary_platform": "Connect"
+    },
+    {
+      "test_id": "test_2_voice_log_validation",
+      "passed": true,
+      "message": "Voice log recorded with good quality",
+      "details": {
+        "recorded": true,
+        "quality_acceptable": true,
+        "call_duration": "5:23",
+        "participants": [
+          "John Smith",
+          "Client ABC"
+        ]
+      },
+      "objective": "Confirm Voice Log recorded for order",
+      "sop_reference": "All Reviews Tab Q #1",
+      "primary_platform": "Voice Logs"
+    },
+    {
+      "test_id": "test_3_order_placer_authorization",
+      "passed": true,
+      "message": "Order placer is authorized",
+      "details": {
+        "authorized": true,
+        "placer_details": "Authorized trader - John Smith",
+        "client_profile": "High net worth client profile",
+        "message": "Order placer is authorized"
+      },
+      "objective": "Verify order placer authorization",
+      "sop_reference": "All Reviews Tab Q #2",
+      "primary_platform": "Brokerage Blotter 2.0, Connect"
+    },
+    {
+      "test_id": "test_4_client_confirmation_no_engage",
+      "passed": true,
+      "message": "Test test_4_client_confirmation_no_engage skipped - condition not met",
+      "skipped": true
+    },
+    {
+      "test_id": "test_5_client_confirmation_engage",
+      "passed": true,
+      "message": "Test test_5_client_confirmation_engage skipped - condition not met",
+      "skipped": true
+    },
+    {
+      "test_id": "test_6_unapproved_products_advice",
+      "passed": true,
+      "message": "One or both texts are empty",
+      "details": {
+        "no_advice_given": true,
+        "message": "One or both texts are empty",
+        "confidence": 0
+      },
+      "objective": "Ensure no advice on unapproved products",
+      "sop_reference": "All Reviews Tab Q #5",
+      "primary_platform": "Brokerage Blotter 2.0, Voice Logs"
+    },
+    {
+      "test_id": "test_7_scrf_dre_documentation",
+      "passed": true,
+      "message": "SCRF document validated successfully",
+      "details": {
+        "documented": true,
+        "message": "SCRF document validated successfully",
+        "document_details": {
+          "document_id": "SCRF_2025_001",
+          "issue_date": "2025-10-15",
+          "issuer": "Securities Commission"
+        }
+      },
+      "objective": "Validate SCRF or DRE documentation",
+      "sop_reference": "All Reviews Tab Q #6",
+      "primary_platform": "Doc Manager"
+    },
+    {
+      "test_id": "test_8_trade_solicitation_documentation",
+      "passed": true,
+      "message": "Trade solicitation is properly tagged",
+      "details": {
+        "documented": true,
+        "tagging": "Solicited",
+        "message": "Trade solicitation is properly tagged"
+      },
+      "objective": "Confirm trade solicitation documentation",
+      "sop_reference": "All Reviews Tab Q #7",
+      "primary_platform": "Brokerage Blotter 2.0"
+    },
+    {
+      "test_id": "test_9_trade_documentation_verification",
+      "passed": true,
+      "message": "All fields complete",
+      "details": {
+        "complete_and_accurate": true,
+        "message": "All fields complete",
+        "details": {
+          "missing_fields": [],
+          "empty_fields": [],
+          "completeness_rate": 1.0
+        }
+      },
+      "objective": "Verify trade documentation on blotter/ticket",
+      "sop_reference": "All Reviews Tab Q #8",
+      "primary_platform": "Brokerage Blotter 2.0"
+    },
+    {
+      "test_id": "test_10_mfo_advice_validation",
+      "passed": true,
+      "message": "Test test_10_mfo_advice_validation skipped - condition not met",
+      "skipped": true
+    },
+    {
+      "test_id": "test_11_timely_execution_check",
+      "passed": true,
+      "message": "Time difference: 5.0 minutes (SLA: 15 min)",
+      "details": {
+        "within_sla": true,
+        "message": "Time difference: 5.0 minutes (SLA: 15 min)",
+        "details": {
+          "diff_minutes": 5.0,
+          "max_delay_minutes": 15
+        }
+      },
+      "objective": "Check timely order execution",
+      "sop_reference": "All Reviews Tab Q #10",
+      "primary_platform": "Connect"
+    },
+    {
+      "test_id": "test_12_engagement_status_verification",
+      "passed": true,
+      "message": "Fallback classification: Yes (confidence: 0.7)",
+      "details": {
+        "status": "Yes",
+        "confidence": 0.7,
+        "message": "Fallback classification: Yes (confidence: 0.7)"
+      },
+      "objective": "Verify engagement status for account",
+      "sop_reference": "Control Tab Q #3",
+      "primary_platform": "Connect, Doc Manager"
+    },
+    {
+      "test_id": "test_13_bilateral_agreement_documentation",
+      "passed": true,
+      "message": "Bilateral Agreement document validated successfully",
+      "details": {
+        "documented": true,
+        "message": "Bilateral Agreement document validated successfully",
+        "document_details": {
+          "document_id": "BA_2025_001",
+          "signature_date": "2025-10-20",
+          "parties": [
+            "Bank",
+            "Client ABC"
+          ]
+        }
+      },
+      "objective": "Check bilateral agreement documentation",
+      "sop_reference": "All Reviews Tab Q #1",
+      "primary_platform": "Doc Manager"
+    },
+    {
+      "test_id": "test_14_syndicate_allocation_validation",
+      "passed": true,
+      "message": "Syndicate allocation is properly formatted",
+      "details": {
+        "correct": true,
+        "allocation": "50% primary, 50% secondary",
+        "message": "Syndicate allocation is properly formatted"
+      },
+      "objective": "Validate if Syndicate Allocation is correct",
+      "sop_reference": "Control Tab Q #2",
+      "primary_platform": "Brokerage Blotter 2.0"
+    },
+    {
+      "test_id": "test_15_new_subscription_status",
+      "passed": true,
+      "message": "Test test_15_new_subscription_status skipped - condition not met",
+      "skipped": true
+    },
+    {
+      "test_id": "test_16_aces_fields_completeness",
+      "passed": true,
+      "message": "All fields complete",
+      "details": {
+        "complete": true,
+        "message": "All fields complete",
+        "details": {
+          "missing_fields": [],
+          "empty_fields": [],
+          "completeness_rate": 1.0
+        }
+      },
+      "objective": "Ensure all required ACES fields are complete",
+      "sop_reference": "Final Steps",
+      "primary_platform": "ACES"
+    }
+  ],
+  "final_summary": {
+    "overall_status": "PASS",
+    "ticket_id": "TKT67891",
+    "ticket_type": "fee_modification",
+    "execution_status": "data_extraction_complete",
+    "test_statistics": {
+      "total_tests": 16,
+      "passed_tests": 16,
+      "failed_tests": 0,
+      "success_rate": 100.0
+    },
+    "test_categories": {
+      "Eligibility": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "Voice Logs": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "Authorization": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "Client Confirmation": {
+        "passed": 2,
+        "failed": 0,
+        "total": 2
+      },
+      "Advice Validation": {
+        "passed": 2,
+        "failed": 0,
+        "total": 2
+      },
+      "Documentation": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      },
+      "Execution Timing": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "Engagement Status": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "Allocation & Subscription": {
+        "passed": 2,
+        "failed": 0,
+        "total": 2
+      },
+      "ACES Completeness": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      }
+    },
+    "detailed_results": [
+      {
+        "test_id": "test_1_eligibility_validation",
+        "status": "PASS",
+        "message": "Product Equity and transaction Buy are in scope",
+        "objective": "Validate eligibility of sample record for evaluation",
+        "sop_reference": "Validate Eligibility",
+        "primary_platform": "Connect",
+        "details": {
+          "eligible": true,
+          "product_type": "Equity",
+          "transaction_type": "Buy",
+          "reasoning": "Product Equity and transaction Buy are in scope"
+        }
+      },
+      {
+        "test_id": "test_2_voice_log_validation",
+        "status": "PASS",
+        "message": "Voice log recorded with good quality",
+        "objective": "Confirm Voice Log recorded for order",
+        "sop_reference": "All Reviews Tab Q #1",
+        "primary_platform": "Voice Logs",
+        "details": {
+          "recorded": true,
+          "quality_acceptable": true,
+          "call_duration": "5:23",
+          "participants": [
+            "John Smith",
+            "Client ABC"
+          ]
+        }
+      },
+      {
+        "test_id": "test_3_order_placer_authorization",
+        "status": "PASS",
+        "message": "Order placer is authorized",
+        "objective": "Verify order placer authorization",
+        "sop_reference": "All Reviews Tab Q #2",
+        "primary_platform": "Brokerage Blotter 2.0, Connect",
+        "details": {
+          "authorized": true,
+          "placer_details": "Authorized trader - John Smith",
+          "client_profile": "High net worth client profile",
+          "message": "Order placer is authorized"
+        }
+      },
+      {
+        "test_id": "test_4_client_confirmation_no_engage",
+        "status": "PASS",
+        "message": "Test test_4_client_confirmation_no_engage skipped - condition not met",
+        "objective": "",
+        "sop_reference": "",
+        "primary_platform": "",
+        "details": {}
+      },
+      {
+        "test_id": "test_5_client_confirmation_engage",
+        "status": "PASS",
+        "message": "Test test_5_client_confirmation_engage skipped - condition not met",
+        "objective": "",
+        "sop_reference": "",
+        "primary_platform": "",
+        "details": {}
+      },
+      {
+        "test_id": "test_6_unapproved_products_advice",
+        "status": "PASS",
+        "message": "One or both texts are empty",
+        "objective": "Ensure no advice on unapproved products",
+        "sop_reference": "All Reviews Tab Q #5",
+        "primary_platform": "Brokerage Blotter 2.0, Voice Logs",
+        "details": {
+          "no_advice_given": true,
+          "message": "One or both texts are empty",
+          "confidence": 0
+        }
+      },
+      {
+        "test_id": "test_7_scrf_dre_documentation",
+        "status": "PASS",
+        "message": "SCRF document validated successfully",
+        "objective": "Validate SCRF or DRE documentation",
+        "sop_reference": "All Reviews Tab Q #6",
+        "primary_platform": "Doc Manager",
+        "details": {
+          "documented": true,
+          "message": "SCRF document validated successfully",
+          "document_details": {
+            "document_id": "SCRF_2025_001",
+            "issue_date": "2025-10-15",
+            "issuer": "Securities Commission"
+          }
+        }
+      },
+      {
+        "test_id": "test_8_trade_solicitation_documentation",
+        "status": "PASS",
+        "message": "Trade solicitation is properly tagged",
+        "objective": "Confirm trade solicitation documentation",
+        "sop_reference": "All Reviews Tab Q #7",
+        "primary_platform": "Brokerage Blotter 2.0",
+        "details": {
+          "documented": true,
+          "tagging": "Solicited",
+          "message": "Trade solicitation is properly tagged"
+        }
+      },
+      {
+        "test_id": "test_9_trade_documentation_verification",
+        "status": "PASS",
+        "message": "All fields complete",
+        "objective": "Verify trade documentation on blotter/ticket",
+        "sop_reference": "All Reviews Tab Q #8",
+        "primary_platform": "Brokerage Blotter 2.0",
+        "details": {
+          "complete_and_accurate": true,
+          "message": "All fields complete",
+          "details": {
+            "missing_fields": [],
+            "empty_fields": [],
+            "completeness_rate": 1.0
+          }
+        }
+      },
+      {
+        "test_id": "test_10_mfo_advice_validation",
+        "status": "PASS",
+        "message": "Test test_10_mfo_advice_validation skipped - condition not met",
+        "objective": "",
+        "sop_reference": "",
+        "primary_platform": "",
+        "details": {}
+      },
+      {
+        "test_id": "test_11_timely_execution_check",
+        "status": "PASS",
+        "message": "Time difference: 5.0 minutes (SLA: 15 min)",
+        "objective": "Check timely order execution",
+        "sop_reference": "All Reviews Tab Q #10",
+        "primary_platform": "Connect",
+        "details": {
+          "within_sla": true,
+          "message": "Time difference: 5.0 minutes (SLA: 15 min)",
+          "details": {
+            "diff_minutes": 5.0,
+            "max_delay_minutes": 15
+          }
+        }
+      },
+      {
+        "test_id": "test_12_engagement_status_verification",
+        "status": "PASS",
+        "message": "Fallback classification: Yes (confidence: 0.7)",
+        "objective": "Verify engagement status for account",
+        "sop_reference": "Control Tab Q #3",
+        "primary_platform": "Connect, Doc Manager",
+        "details": {
+          "status": "Yes",
+          "confidence": 0.7,
+          "message": "Fallback classification: Yes (confidence: 0.7)"
+        }
+      },
+      {
+        "test_id": "test_13_bilateral_agreement_documentation",
+        "status": "PASS",
+        "message": "Bilateral Agreement document validated successfully",
+        "objective": "Check bilateral agreement documentation",
+        "sop_reference": "All Reviews Tab Q #1",
+        "primary_platform": "Doc Manager",
+        "details": {
+          "documented": true,
+          "message": "Bilateral Agreement document validated successfully",
+          "document_details": {
+            "document_id": "BA_2025_001",
+            "signature_date": "2025-10-20",
+            "parties": [
+              "Bank",
+              "Client ABC"
+            ]
+          }
+        }
+      },
+      {
+        "test_id": "test_14_syndicate_allocation_validation",
+        "status": "PASS",
+        "message": "Syndicate allocation is properly formatted",
+        "objective": "Validate if Syndicate Allocation is correct",
+        "sop_reference": "Control Tab Q #2",
+        "primary_platform": "Brokerage Blotter 2.0",
+        "details": {
+          "correct": true,
+          "allocation": "50% primary, 50% secondary",
+          "message": "Syndicate allocation is properly formatted"
+        }
+      },
+      {
+        "test_id": "test_15_new_subscription_status",
+        "status": "PASS",
+        "message": "Test test_15_new_subscription_status skipped - condition not met",
+        "objective": "",
+        "sop_reference": "",
+        "primary_platform": "",
+        "details": {}
+      },
+      {
+        "test_id": "test_16_aces_fields_completeness",
+        "status": "PASS",
+        "message": "All fields complete",
+        "objective": "Ensure all required ACES fields are complete",
+        "sop_reference": "Final Steps",
+        "primary_platform": "ACES",
+        "details": {
+          "complete": true,
+          "message": "All fields complete",
+          "details": {
+            "missing_fields": [],
+            "empty_fields": [],
+            "completeness_rate": 1.0
+          }
+        }
+      }
+    ],
+    "context": {
+      "order_id": "TKT67891",
+      "product_type": "Equity",
+      "transaction_type": "Buy",
+      "order_type": "FVEQ New Issuance",
+      "engage_status": "Engage = Yes",
+      "order_time": "2025-10-23T14:30:00Z",
+      "execution_time": "2025-10-23T14:35:00Z",
+      "trade_inquiry": "",
+      "order_taker_type": "Regular",
+      "product_class": "Equity"
+    },
+    "session_info": {
+      "session_id": "1d376af6-81ae-44e0-adc1-3fa8ae77a8c8",
+      "ticket_id": "TKT67891",
+      "ticket_type": "fee_modification",
+      "execution_status": "data_extraction_complete",
+      "data_sources": [
+        "ticket",
+        "connect_data",
+        "brokerage_blotter_data",
+        "doc_manager_data",
+        "voice_logs_data",
+        "aces_data",
+        "scribe_data"
+      ],
+      "completed_tests": [],
+      "created_at": "2025-10-24T00:10:03.429963",
+      "updated_at": "2025-10-24T00:10:03.430127"
+    },
+    "timestamp": "2025-10-24T00:10:03.496036"
+  },
+  "workflow_duration": 0.066076
+}

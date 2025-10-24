@@ -3,13 +3,8 @@ import time
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
-from utils.data_loader import DataLoader
+from utils.data_loader import load_ticket
 from utils.logger import log_start, log_complete
-from agents.orchestrator import OrchestratorAgent
-from agents.data_request_agent import DataRequestAgent
-from agents.result_aggregator import ResultAggregator
-from agents.decision_agent import DecisionAgent
-from agents.exception_agent import ExceptionAgent
 from engines.workflow_engine import WorkflowEngine
 import argparse
 def main():
@@ -32,34 +27,28 @@ def main():
                        help='Verbose output')
     
     args = parser.parse_args()
-    data_loader = DataLoader("mock_data")
-    orchestrator = OrchestratorAgent(llm)
-    data_agent = DataRequestAgent(data_loader)
-    aggregator = ResultAggregator()
-    decision_agent = DecisionAgent(llm)
-    exception_agent = ExceptionAgent(llm)
-    
     # Build workflow
-    engine = WorkflowEngine(
-        orchestrator, data_agent, aggregator, 
-        decision_agent, exception_agent
-    )
+    engine = WorkflowEngine(llm=llm)
     
-    # Run demo - PASS scenario
-    ticket_id = "TKT67890"
+    # Run demo
+    ticket_id = args.ticket
     
     # Load ticket for header
-    tt = data_loader.load_trade_ticket(ticket_id)
+    tt = load_ticket(ticket_id)
     log_start(ticket_id, tt["trade_type"], tt["platform"])
     
+    # Map scenario names
+    scenario_map = {"pass": "happy", "fail": "fail"}
+    scenario = scenario_map.get(args.scenario, "happy")
+    
     start_time = time.time()
-    result = engine.run(ticket_id)
+    result = engine.run(tt, scenario=scenario)
     duration = time.time() - start_time
     
     # Print results
-    agg = result.get("aggregated_result", {})
-    status = agg.get("overall_status", "UNKNOWN")
-    total = agg.get("total_checks", 0)
+    agg = result.get("summary", {})
+    status = result.get("decision", {}).get("decision", "UNKNOWN")
+    total = agg.get("total", 0)
     failed = agg.get("failed", 0)
     
     log_complete(status, duration, total, failed)

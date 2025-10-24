@@ -100,10 +100,19 @@ class WorkflowEngine:
 
         # Optional LLM narrative
         if use_llm and llm is not None:
+            # Convert datetime objects to strings for JSON serialization
+            checks_serializable = []
+            for check in checks:
+                check_copy = check.copy()
+                for key, value in check_copy.items():
+                    if hasattr(value, 'isoformat'):  # datetime object
+                        check_copy[key] = value.isoformat()
+                checks_serializable.append(check_copy)
+            
             prompt = (
                 "Write a concise QA result for a fee modification check.\n"
                 f"Ticket: {ticket['ticket_id']}, Account: {account_id}\n"
-                f"Checks: {json.dumps(checks)}\n"
+                f"Checks: {json.dumps(checks_serializable)}\n"
                 "Summarize in 3 bullets. Keep factual and neutral."
             )
             out = llm.invoke(prompt)

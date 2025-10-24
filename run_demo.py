@@ -1,12 +1,19 @@
 import os
 import json
 import argparse
+from datetime import datetime
 from dotenv import load_dotenv
 from rich.panel import Panel
 from langchain_openai import ChatOpenAI
 from utils.logger import console, section, success, failure, info
 from utils.data_loader import load_ticket
 from engines.workflow_engine import WorkflowEngine
+
+def json_serializer(obj):
+    """Custom JSON serializer for datetime objects"""
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
 def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None):
     section(f"Scenario: {scenario.upper()} — Ticket {ticket_id}")
@@ -56,7 +63,7 @@ def run_case(ticket_id: str, scenario: str, use_llm: bool, pdf_path: str | None)
     out_dir = "outputs"; os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"RUN_{ticket_id}_{scenario}.json")
     with open(path, "w") as f:
-        f.write(json.dumps(result, indent=2))
+        f.write(json.dumps(result, indent=2, default=json_serializer))
     info(f"Ledger written to {path}")
 
 def main():

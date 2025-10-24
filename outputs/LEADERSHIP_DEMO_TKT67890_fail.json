@@ -1,0 +1,92 @@
+{
+  "ticket": {
+    "ticket_id": "TKT67890",
+    "account_id": "ACC12345",
+    "trade_type": "SP",
+    "platform": "Madrid",
+    "execution_time": "2025-10-23T14:30:00Z",
+    "effective_date": "2025-10-01",
+    "trade_amount": 100000,
+    "currency": "USD",
+    "status": "executed"
+  },
+  "datapoints": {
+    "workhub": {
+      "account_id": "ACC12345",
+      "old_rate": 0.7,
+      "new_rate": 0.65,
+      "modified_timestamp": "2025-10-02T10:15:00",
+      "modified_by": "ops_user_1"
+    },
+    "feeapp": {
+      "approved_rate": 0.6,
+      "approval_id": "APR-999",
+      "approval_date": "2025-09-30",
+      "approver": "mgr_b"
+    },
+    "approval_exists": true
+  },
+  "document": null,
+  "checks": [
+    {
+      "passed": false,
+      "reason": "0.65 != 0.6 @ 2dp",
+      "left": 0.65,
+      "right": 0.6,
+      "id": "rate_match"
+    },
+    {
+      "id": "approval_email_present",
+      "passed": true,
+      "reason": "approval email present",
+      "left": true,
+      "right": true
+    },
+    {
+      "passed": true,
+      "reason": "2025-10-02 10:15:00 in [2025-10-01 00:00:00, 2025-10-08 00:00:00]",
+      "left": "2025-10-02 10:15:00",
+      "right": "2025-10-01 00:00:00",
+      "id": "effective_date_window"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1,
+    "needs_review": 0,
+    "failed_checks": [
+      {
+        "passed": false,
+        "reason": "0.65 != 0.6 @ 2dp",
+        "left": 0.65,
+        "right": 0.6,
+        "id": "rate_match"
+      }
+    ]
+  },
+  "decision": {
+    "ticket_id": "TKT67890",
+    "decision": "FAIL",
+    "summary": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "needs_review": 0,
+      "failed_checks": [
+        {
+          "passed": false,
+          "reason": "0.65 != 0.6 @ 2dp",
+          "left": 0.65,
+          "right": 0.6,
+          "id": "rate_match"
+        }
+      ]
+    }
+  },
+  "exception_email": {
+    "to": "controls-qa-exceptions@firm.com",
+    "subject": "[QA-EXCEPTION] TKT67890 ()",
+    "body": "Ticket: TKT67890\nIntent: \n\nThe following checks failed:\n- rate_match: 0.65 != 0.6 @ 2dp"
+  }
+}

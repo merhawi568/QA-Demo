@@ -22,7 +22,10 @@ def get_workhub_fee_mod(account_id: str) -> Dict[str, Any]:
     }
 
 def get_feeapp_fees(account_id: str, scenario: str = "happy") -> Dict[str, Any]:
-    if scenario == "fail":
+    # Use different data based on account ID for more realistic scenarios
+    if account_id == "ACC67891":  # Failure ticket
+        return {"approved_rate": 0.60, "approval_id": "APR-999", "approval_date": "2025-09-30", "approver": "mgr_b"}
+    elif scenario == "fail":
         return {"approved_rate": 0.60, "approval_id": "APR-999", "approval_date": "2025-09-30", "approver": "mgr_b"}
     return {"approved_rate": 0.65, "approval_id": "APR-123", "approval_date": "2025-09-30", "approver": "mgr_a"}
 
