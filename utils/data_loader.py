@@ -11,9 +11,8 @@ def load_ticket(ticket_id: str) -> Dict[str, Any]:
         raise FileNotFoundError(f"Ticket not found: {p}")
     return json.loads(p.read_text())
 
-# For demo we return hardcoded dicts; swap to reading JSON files in mock_data/* if you prefer.
 def get_workhub_fee_mod(account_id: str) -> Dict[str, Any]:
-    # happy values aligned with TKT67890 (effective_date near 2025-10-01)
+    # tune to your TKT67890 effective_date (2025-10-01 in your mock)
     return {
         "account_id": account_id,
         "old_rate": 0.70,
@@ -28,6 +27,4 @@ def get_feeapp_fees(account_id: str, scenario: str = "happy") -> Dict[str, Any]:
     return {"approved_rate": 0.65, "approval_id": "APR-123", "approval_date": "2025-09-30", "approver": "mgr_a"}
 
 def get_email_approval_exists(account_id: str) -> bool:
-    # For demo: always true
     return True
-
