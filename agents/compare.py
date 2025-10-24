@@ -30,7 +30,4 @@ def date_in_range(date_val: Any, min_date: Any, max_offset_days: int) -> Dict[st
     m = _to_dt(min_date)
     upper = m + timedelta(days=int(max_offset_days))
     ok = m <= d <= upper
-    # BEFORE
-
-    return {"passed": ok, "reason": f"{ra} == {rb} @ {places}dp" if ok else f"{ra} != {rb} @ {places}dp", "left": a, "right": b}
-
+    return {"passed": ok, "reason": f"{d} in [{m}, {upper}]" if ok else f"{d} out of range", "left": d, "right": m}
