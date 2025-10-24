@@ -1,24 +1,17 @@
-# Drafts email for exception
-def draft_exception_email(decision, results, metadata):
-    # Uses LLM to write professional email
-    
-    return {
-        "to": "compliance-team@company.com",
-        "subject": "Trade TKT67890 - Compliance Exception",
-        "body": """
-        URGENT: Trade Compliance Issue
-        
-        Trade ID: TKT67890
-        Issue: Pre-trade consent not obtained
-        
-        Details:
-        - Consent call at 14:35
-        - Trade executed at 14:30
-        - Violation: MiFID II pre-trade consent requirement
-        
-        Evidence:
-        [Attached findings]
-        
-        Recommended Action: Block settlement pending review
-        """
-    }
+from typing import Dict, Any
+
+class ExceptionAgent:
+    def build_email(self, ticket: Dict[str, Any], failed_checks) -> Dict[str, Any]:
+        body_lines = [
+            f"Ticket: {ticket['ticket_id']}",
+            f"Intent: {ticket.get('intent','')}",
+            "",
+            "The following checks failed:"
+        ]
+        for c in failed_checks:
+            body_lines.append(f"- {c['id']}: {c['reason']}")
+        return {
+            "to": "controls-qa-exceptions@firm.com",
+            "subject": f"[QA-EXCEPTION] {ticket['ticket_id']} ({ticket.get('intent','')})",
+            "body": "\n".join(body_lines)
+        }
